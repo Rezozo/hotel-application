@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users
+      author: Kirill
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(70)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: groups
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(70)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
