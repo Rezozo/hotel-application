@@ -2,7 +2,6 @@ package com.hotel.app.config;
 
 import com.hotel.app.repository.BookingRepository;
 import com.hotel.app.service.BookingService;
-import com.hotel.app.service.RoomService;
 import com.hotel.app.service.impl.BookingServiceImpl;
 import com.hotel.app.validate.BookingValidate;
 import com.hotel.app.validate.impl.BookingValidateImpl;
@@ -18,7 +17,7 @@ public class BookingConfig {
         return new BookingServiceImpl(bookingRepository);
     }
     @Bean
-    public BookingValidate bookingValidate(BookingService bookingService, RoomService roomService) {
-        return new BookingValidateImpl(roomService, bookingService);
+    public BookingValidate bookingValidate(BookingService bookingService) {
+        return new BookingValidateImpl(bookingService);
     }
 }

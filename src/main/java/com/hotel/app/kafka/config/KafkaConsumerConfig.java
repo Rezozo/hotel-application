@@ -2,7 +2,6 @@ package com.hotel.app.kafka.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.app.fcm.service.PushService;
-import com.hotel.app.fcm.service.impl.PushServiceImpl;
 import com.hotel.app.kafka.service.KafkaConsumerService;
 import com.hotel.app.kafka.service.impl.KafkaConsumerServiceImpl;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

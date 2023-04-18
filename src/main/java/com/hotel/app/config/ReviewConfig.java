@@ -6,7 +6,6 @@ import com.hotel.app.service.CustomerService;
 import com.hotel.app.service.ReviewService;
 import com.hotel.app.service.impl.CustomerServiceImpl;
 import com.hotel.app.service.impl.ReviewServiceImpl;
-import com.hotel.app.validate.impl.ReviewValidateImpl;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +20,5 @@ public class ReviewConfig {
     @Bean
     public static CustomerService customerService(CustomerRepository customerRepository) {
         return new CustomerServiceImpl(customerRepository);
-    }
-    @Bean
-    public static ReviewValidateImpl reviewValidator(CustomerService customerService, ReviewService reviewService) {
-        return new ReviewValidateImpl(customerService, reviewService);
     }
 }

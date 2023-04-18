@@ -1,5 +1,8 @@
 package com.hotel.app.kafka.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hotel.app.kafka.service.KafkaProducerService;
+import com.hotel.app.kafka.service.impl.KafkaProducerServiceImpl;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,5 +34,9 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
+    }
+    @Bean
+    public KafkaProducerService kafkaProducerService(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
+        return new KafkaProducerServiceImpl(kafkaTemplate, objectMapper);
     }
 }
