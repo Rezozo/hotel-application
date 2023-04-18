@@ -2,7 +2,6 @@ package com.hotel.app.service.impl;
 
 import com.hotel.app.config.request.AuthenticationRequest;
 import com.hotel.app.config.request.RegisterRequest;
-import com.hotel.app.config.response.AuthenticationResponse;
 import com.hotel.app.enums.Role;
 import com.hotel.app.models.Customer;
 import com.hotel.app.models.Users;
@@ -11,16 +10,16 @@ import com.hotel.app.service.CustomerService;
 import com.hotel.app.service.JwtService;
 import com.hotel.app.service.UsersService;
 import com.hotel.app.validate.RegisterValidate;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RegisterValidate registerValidate;
 
     @Override
-    public ResponseEntity<String> register(RegisterRequest request) {
+    public String register(RegisterRequest request) throws BadCredentialsException {
         Users user = Users.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -41,24 +40,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .groups(Role.User)
                 .build();
 
-        ResponseEntity<String> resPhone = registerValidate.validPhoneNumber(request.getPhoneNumber());
-        ResponseEntity<String> resEmail = registerValidate.validEmail(request.getEmail());
+        String resPhone = registerValidate.validPhoneNumber(request.getPhoneNumber());
+        String resEmail = registerValidate.validEmail(request.getEmail());
 
-        if (resEmail.equals(ResponseEntity.ok().build()) && resPhone.equals(ResponseEntity.ok().build())) {
+        if (resEmail.equals("true") && resPhone.equals("true")) {
             usersService.save(user);
             Customer customer = new Customer(usersService.getByEmail(request.getEmail()).getId(), request.getFullName(), request.getEmail(), request.getPhoneNumber());
             customerService.save(customer);
-            return ResponseEntity.ok("Success");
+            return "Success";
         }
 
-        if(!resEmail.equals(ResponseEntity.ok().build()))
+        if(!resEmail.equals("true"))
             return resEmail;
 
         return resPhone;
     }
-
     @Override
-    public ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request, HttpServletResponse response) {
+    public Map<String, Object> authenticate(AuthenticationRequest request, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
+
         try {
             manager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -66,23 +66,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                             request.getPassword()
                     )
             );
+
+            Users user = usersService.getByEmail(request.getEmail());
+            String jwtToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.refreshToken(jwtToken);
+
+            result.put("token", jwtToken);
+            result.put("refreshToken", refreshToken);
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            result.put("error", "Invalid email or password");
         }
 
-        Users user = usersService.getByEmail(request.getEmail());
-        String jwtToken = jwtService.generateToken(user);
-        addTokenToCookie(response, jwtToken);
-        return ResponseEntity.ok(AuthenticationResponse.builder()
-                                    .token(jwtToken)
-                                    .build());
-    }
-    @Override
-    public void addTokenToCookie(HttpServletResponse response, String jwt) {
-        Cookie cookie = new Cookie("token", jwt);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(60 * 60 * 24 * 7);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        return result;
     }
 }

@@ -10,6 +10,8 @@ public interface UsersService {
     List<Users> getAll();
     void save(Users users);
     void deleteByEmail(String email);
+    void deleteById(Integer id);
+    void updateById(Integer id, String email, String fullName);
     void updateByEmail(String email, String fullName, String password);
-    void updateUsersGroup(String email, Role groups);
+    void updateUsersGroup(Integer id, Role groups);
 }

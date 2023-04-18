@@ -21,6 +21,11 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
+    public RoomType getByTitle(String title) {
+        return roomTypeRepository.findByTitle(title).orElse(null);
+    }
+
+    @Override
     public List<RoomType> getAll() {
         return (List<RoomType>) roomTypeRepository.findAll();
     }

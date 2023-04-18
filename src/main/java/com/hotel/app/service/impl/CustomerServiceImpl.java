@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
@@ -16,23 +18,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
     @Override
     public Customer getById(Integer id) {
-        return customerRepository.findById(id).orElse(null);
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Customer not found"));
     }
     @Override
     public Customer getByEmail(String email) {
-        return customerRepository.findByEmail(email).orElse(null);
+        return customerRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("Customer not found"));
     }
-
     @Override
     public Customer getByPhoneNumber(String phoneNumber) {
-        return customerRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        return customerRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new NoSuchElementException("Customer not found"));
     }
 
     @Override
     public List<Customer> getAll() {
         return (List<Customer>) customerRepository.findAll();
     }
-
     @Override
     public void save(Customer customer) {
         customerRepository.save(customer);
@@ -42,13 +45,33 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(id);
     }
     @Override
-    public void updateCustomer(Integer id, String fullName, String email, String phoneNumber) {
-        Customer customer = customerRepository.findById(id).orElse(null);
-        if(customer != null) {
-            customer.setFullName(fullName);
-            customer.setEmail(email);
-            customer.setPhoneNumber(phoneNumber);
-            customerRepository.save(customer);
+    public void updateCustomer(Customer mainCustomer) {
+        Customer customer = customerRepository.findById(mainCustomer.getId()).orElse(null);
+
+        if (customer != null) {
+            if((customer.getEmail().equals(mainCustomer.getEmail()) || !existEmail(mainCustomer.getEmail())) &&
+                    (customer.getPhoneNumber().equals(mainCustomer.getPhoneNumber()) || !existPhoneNumber(mainCustomer.getPhoneNumber()))) {
+                customer.setFullName(mainCustomer.getFullName());
+                customer.setEmail(mainCustomer.getEmail());
+                customer.setPhoneNumber(mainCustomer.getPhoneNumber());
+                customerRepository.save(customer);
+            }
         }
+    }
+    @Override
+    public Boolean existPhoneNumber(String phoneNumber) {
+        Customer customer = customerRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        if (customer != null) {
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public Boolean existEmail(String email) {
+        Customer customer = customerRepository.findByEmail(email).orElse(null);
+        if (customer != null) {
+            return true;
+        }
+        return false;
     }
 }

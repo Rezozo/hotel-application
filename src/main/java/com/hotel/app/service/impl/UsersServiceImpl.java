@@ -19,7 +19,6 @@ public class UsersServiceImpl implements UsersService {
     public Users getByEmail(String email) {
         return usersRepository.findByEmail(email).orElse(null);
     }
-
     @Override
     public List<Users> getAll() {
         return (List<Users>) usersRepository.findAll();
@@ -31,8 +30,23 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public void deleteById(Integer id) {
+        usersRepository.deleteById(id);
+    }
+
+    @Override
     public void deleteByEmail(String email) {
         usersRepository.deleteByEmail(email);
+    }
+
+    @Override
+    public void updateById(Integer id, String email, String fullName) {
+        Users users = usersRepository.findById(id).orElse(null);
+        if (users != null) {
+            users.setEmail(email);
+            users.setFullName(fullName);
+            usersRepository.save(users);
+        }
     }
 
     @Override
@@ -47,9 +61,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void updateUsersGroup(String email, Role groups) {
-        Users users = usersRepository.findByEmail(email).get();
-        if(users.getEmail().length() > 0) {
+    public void updateUsersGroup(Integer id, Role groups) {
+        Users users = usersRepository.findById(id).orElse(null);
+        if (users != null) {
             users.setGroups(groups);
             usersRepository.save(users);
         }

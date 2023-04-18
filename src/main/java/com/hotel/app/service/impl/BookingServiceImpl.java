@@ -1,19 +1,17 @@
 package com.hotel.app.service.impl;
 
 import com.hotel.app.dto.BookingInfoDto;
+import com.hotel.app.models.Room;
 import com.hotel.app.service.BookingService;
 import com.hotel.app.models.Booking;
 import com.hotel.app.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Arrays;
+import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -23,11 +21,11 @@ public class BookingServiceImpl implements BookingService {
         this.bookingRepository = bookingRepository;
     }
     @Override
-    public List<Timestamp> getArrivalDates(Integer id) {
+    public List<Date> getArrivalDates(Integer id) {
         return bookingRepository.findBookingArrivalByRoomId(id);
     }
     @Override
-    public List<Timestamp> getDepartureDates(Integer id) {
+    public List<Date> getDepartureDates(Integer id) {
         return bookingRepository.findBookingDepartureByRoomId(id);
     }
     @Override
@@ -60,5 +58,39 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void deleteById(Integer id) {
         bookingRepository.deleteById(id);
+    }
+
+    @Override
+    public Boolean canBook(BookingInfoDto bookingInfoDto, List<Date> arrivalDates, List<Date> departureDates) {
+        for (int i = 0; i < arrivalDates.size(); i++) {
+            if (!bookingInfoDto.getDepartureDate().before(arrivalDates.get(i))
+                    && !bookingInfoDto.getArrivalDate().after(departureDates.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean canBookInThisSegment(Date arrivalDate, Date departureDate, List<Date> arrivalDates, List<Date> departureDates) {
+        for (int i = 0; i < arrivalDates.size(); i++) {
+            if (!departureDate.before(arrivalDates.get(i))
+                    && !arrivalDate.after(departureDates.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public Integer getCost(BookingInfoDto bookingInfoDto, Room room) {
+        int costPerDay = room.getPrice();
+        Date arrivalDate = bookingInfoDto.getArrivalDate();
+        Date departureDate = bookingInfoDto.getDepartureDate();
+
+        Duration duration = Duration.between(arrivalDate.toInstant(), departureDate.toInstant());
+        long days = duration.toDays();
+        if(days == 0) days++;
+        return (int) days * costPerDay;
     }
 }

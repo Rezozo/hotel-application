@@ -6,8 +6,9 @@ import com.hotel.app.config.response.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public interface AuthenticationService {
-    ResponseEntity<String> register(RegisterRequest request);
-    ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request, HttpServletResponse response);
-    void addTokenToCookie(HttpServletResponse response, String jwt);
+    String register(RegisterRequest request);
+    Map<String, Object> authenticate(AuthenticationRequest request, HttpServletResponse response);
 }

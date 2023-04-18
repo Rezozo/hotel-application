@@ -1,26 +1,23 @@
 package com.hotel.app.service.impl;
 
-import com.hotel.app.service.AuthenticationService;
 import com.hotel.app.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.Key;
+import java.time.Instant;
+import java.time.Period;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
-    private AuthenticationService service;
     private static final String SECRET_KEY = "38792F423F4528472B4B6250655368566D597133743677397A24432646294A40";
     @Override
     public String generateToken(UserDetails userDetails) {
@@ -37,21 +34,36 @@ public class JwtServiceImpl implements JwtService {
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    @Override
+    public String generateTokenUseRefreshToken(String refreshToken) {
+        final Claims claims = extractAllClaims(refreshToken);
+        final String username = claims.getSubject();
+        final Map<String, Object> extraClaims = new HashMap<>(claims);
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     @Override
     public String refreshToken(String token) {
         final Claims claims = extractAllClaims(token);
 
         final String username = claims.getSubject();
-        final Date issuedAt = claims.getIssuedAt();
         final Map<String, Object> extraClaims = new HashMap<>(claims);
 
-        final Date now = new Date();
-        final Date newExpiration = new Date(now.getTime() + (1000 * 60 * 60));
+        Instant now = Instant.now();
+        Instant newExpirationInstant = now.plus(Period.ofWeeks(2));
+        final Date newExpiration = Date.from(newExpirationInstant);
 
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(username)
-                .setIssuedAt(issuedAt)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(newExpiration)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
@@ -64,8 +76,6 @@ public class JwtServiceImpl implements JwtService {
         }
         if (isTokenExpired(token)) {
             String newToken = refreshToken(token);
-            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-            service.addTokenToCookie(response, newToken);
             token = newToken;
         }
         return !isTokenExpired(token);
