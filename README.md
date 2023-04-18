@@ -1,4 +1,4 @@
-# 🏚 SpringBoot + Vue hotel app
+# 🏠 SpringBoot + Vue hotel app
 
 <br/>
 
