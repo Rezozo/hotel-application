@@ -24,9 +24,10 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/reviews/").permitAll()
+                .requestMatchers("/auth/refresh").permitAll()
                 .requestMatchers("/reviews/**").authenticated()
                 .requestMatchers("/booking/").authenticated()
-                .requestMatchers("/auth/refresh").authenticated()
+                .requestMatchers("/profile/**").authenticated()
                 .requestMatchers("/manager/**").hasAnyAuthority("Manager", "Admin")
                 .requestMatchers("/admin/**").hasAuthority("Admin")
                 .anyRequest().permitAll()
@@ -35,12 +36,17 @@ public class SecurityConfig {
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/myhotel/")
                         .invalidateHttpSession(true)
-                        .deleteCookies("token"))
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+                        }))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .cors()
+                .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
