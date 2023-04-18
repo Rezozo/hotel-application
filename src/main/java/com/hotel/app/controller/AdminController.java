@@ -4,15 +4,13 @@ import com.hotel.app.enums.Role;
 import com.hotel.app.models.Users;
 import com.hotel.app.service.UsersService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@CrossOrigin("http://localhost:8081/")
 @AllArgsConstructor
 public class AdminController {
     private UsersService usersService;
@@ -22,12 +20,12 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/users/del", method = RequestMethod.DELETE)
-    public void deleteUser(@RequestParam(required = false) String email) {
-        usersService.deleteByEmail(email);
+    public void deleteUser(@RequestParam(required = false) Integer id) {
+        usersService.deleteById(id);
     }
 
     @RequestMapping(value = "/users/update", method = RequestMethod.PUT)
-    public void updateUser(@RequestParam(required = false) String email) {
-        usersService.updateUsersGroup(email, Role.Manager);
+    public void updateUser(@RequestParam(required = false) Integer id) {
+        usersService.updateUsersGroup(id, Role.Manager);
     }
 }

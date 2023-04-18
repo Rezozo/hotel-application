@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
+@CrossOrigin("http://localhost:8081/")
 @AllArgsConstructor
 public class ManagerController {
     private CustomerService customerService;
@@ -24,24 +25,24 @@ public class ManagerController {
         return customerService.getAll();
     }
     @RequestMapping(value = "/bookings", method = RequestMethod.GET)
-    public List<BookingInfoDto> allBookings(@RequestParam(required = false) String dp, @RequestParam(required = false) String dd) {
-        return bookingService.getAll(dp, dd);
+    public List<BookingInfoDto> allBookings(@RequestParam(required = false) String directionPrice, @RequestParam(required = false) String directionDate) {
+        return bookingService.getAll(directionPrice, directionDate);
     }
     @RequestMapping(value = "/stats", method = RequestMethod.GET)
     public List<Map<String, Integer>> showStats(@RequestParam(required = false) Boolean thisMonth) {
         return bookingService.getStats(thisMonth);
     }
     @RequestMapping(value = "/customer/book", method = RequestMethod.GET)
-    public List<BookingInfoDto> customersBookings(@RequestParam(required = false) String pn) {
-        return bookingService.getByPhoneNumber(pn);
+    public List<BookingInfoDto> customersBookings(@RequestParam(required = false) String phoneNumber) {
+        return bookingService.getByPhoneNumber(phoneNumber);
     }
     @RequestMapping(value = "/customer/book/del", method = RequestMethod.DELETE)
     public void customersBookingsDelete(@RequestParam(required = false) Integer id) {
         bookingService.deleteById(id);
     }
     @RequestMapping(value = "/customer/review", method = RequestMethod.GET)
-    public ReviewInfoDto customersReview(@RequestParam(required = false) String pn) {
-        return reviewService.getByPhoneNumber(pn);
+    public ReviewInfoDto customersReview(@RequestParam(required = false) Integer id) {
+        return reviewService.getByIdInfo(id);
     }
     @RequestMapping(value = "/customer/review/del", method = RequestMethod.DELETE)
     public void customersReviewDelete(@RequestParam(required = false) Integer id) {
