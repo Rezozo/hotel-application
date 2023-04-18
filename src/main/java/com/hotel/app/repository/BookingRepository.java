@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +35,12 @@ public interface BookingRepository extends CrudRepository<Booking, Integer> {
             "FROM booking " +
             "WHERE booking.room_id = ?1 and (booking.arrival_date > CURRENT_TIMESTAMP or booking.departure_date > CURRENT_TIMESTAMP) " +
             "Order by booking.id", nativeQuery = true)
-    List<Timestamp> findBookingArrivalByRoomId(Integer roomId);
+    List<Date> findBookingArrivalByRoomId(Integer roomId);
     @Query(value = "SELECT booking.departure_date " +
             "FROM booking " +
             "WHERE booking.room_id = ?1 and (booking.arrival_date > CURRENT_TIMESTAMP or booking.departure_date > CURRENT_TIMESTAMP) " +
             "Order by booking.id, booking.arrival_date", nativeQuery = true)
-    List<Timestamp> findBookingDepartureByRoomId(Integer roomId);
+    List<Date> findBookingDepartureByRoomId(Integer roomId);
     @Query(value = "Select count(id), sum(total_cost) " +
             "from booking", nativeQuery = true)
     List<Map<String, Integer>> findStatsBooking();

@@ -11,7 +11,10 @@ import java.util.List;
 public interface ReviewRepository extends CrudRepository<Review, Integer> {
     @Query(value = "Select new com.hotel.app.dto.ReviewInfoDto(r.id, c.fullName, c.email, r.rate, r.feedback) " +
             "from Review r, Customer c where c.id = r.customer and c.email = :email")
-    ReviewInfoDto findReviewInfoOne(@Param("email") String email);
+    ReviewInfoDto findReviewInfoOneByEmail(@Param("email") String email);
+    @Query(value = "Select new com.hotel.app.dto.ReviewInfoDto(r.id, c.fullName, c.email, r.rate, r.feedback) " +
+            "from Review r, Customer c where c.id = r.customer and c.id = :id")
+    ReviewInfoDto findReviewInfoOneById(@Param("id") Integer id);
     @Query(value = "Select new com.hotel.app.dto.ReviewInfoDto(r.id, c.fullName, c.email, r.rate, r.feedback) " +
             "from Review r, Customer c where c.id = r.customer and c.phoneNumber = :phoneNumber")
     ReviewInfoDto findReviewInfoOneByPhone(@Param("phoneNumber") String phoneNumber);
