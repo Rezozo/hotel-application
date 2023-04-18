@@ -2,7 +2,7 @@ package com.hotel.app.models;
 
 import com.hotel.app.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,11 +25,13 @@ public class Users implements UserDetails {
     @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1)
     private Integer id;
     @Column(name = "full_name")
-    @Size(max = 255, message = "Error, >255 symbols")
+    @NotBlank(message = "Enter full name")
     private String fullName;
     @Enumerated(EnumType.STRING)
     private Role groups;
+    @NotBlank(message = "Enter email")
     private String email;
+    @NotBlank(message = "Enter password")
     private String password;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

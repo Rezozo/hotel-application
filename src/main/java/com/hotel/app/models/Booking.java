@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -24,9 +24,9 @@ public class Booking {
     @Column(name = "room_id")
     private Integer room;
     @Column(name = "arrival_date")
-    private Timestamp arrival;
+    private Date arrival;
     @Column(name = "departure_date")
-    private Timestamp departure;
+    private Date departure;
     @Column(name = "total_cost")
     private Integer cost;
 }
