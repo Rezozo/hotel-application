@@ -35,7 +35,7 @@
 
 ## Screenshots:
 * ### Home Page
-![Home](https://i.ibb.co/JpzPDhj/Home.png)<br/>
+![Home](https://i.ibb.co/2hTnGVv/Homewhite.png)<br/>
 
 * ### All Rooms Page
 
