@@ -28,6 +28,11 @@
 
 <br/>
 
+## Database Structure
+
+![Database](https://i.ibb.co/Y4gvskp/Database.jpg)
+
+
 ## Screenshots:
 * ### Home Page
 ![Home](https://i.ibb.co/JpzPDhj/Home.png)<br/>
