@@ -1,7 +1,6 @@
 package com.hotel.app.controller;
 
 import com.hotel.app.dto.RoomInfoDto;
-import com.hotel.app.dto.RoomInfoOneDto;
 import com.hotel.app.service.RoomService;
 import com.hotel.app.service.RoomTypeService;
 import com.hotel.app.models.RoomType;
@@ -45,22 +44,15 @@ public class HomeController {
         return ResponseEntity.ok(roomService.getAllByType(roomType.getTitle(), status, direction, arrivalDate, departureDate));
     }
     @RequestMapping(value = "/{typetitle}/rooms/{title}", method = RequestMethod.GET)
-    public ResponseEntity<RoomInfoOneDto> homeOneRoom(@PathVariable String typetitle, @PathVariable String title) {
+    public ResponseEntity<RoomInfoDto> homeOneRoom(@PathVariable String typetitle, @PathVariable String title) {
         RoomType roomType = roomTypeService.getByTitle(typetitle);
 
         if (roomType == null) {
             return ResponseEntity.notFound().build();
         }
 
-        List<RoomInfoDto> roomsInfo = roomService.getAllByType(roomType.getTitle(), null, null, null, null);
-        for (RoomInfoDto roomInfoDto : roomsInfo) {
-            if (roomInfoDto.getTitle().equals(title)) {
-                RoomInfoOneDto roomInfoOneDto = new RoomInfoOneDto(roomInfoDto.getId(), roomInfoDto.getType(), roomInfoDto.getNumber(), roomInfoDto.getTitle(), roomInfoDto.getDescription(),
-                        roomInfoDto.getImage(), roomInfoDto.getPrice(), null, null, roomInfoDto.getStatus());
-                return ResponseEntity.ok(roomInfoOneDto);
-            }
-        }
-
-        return ResponseEntity.notFound().build();
+        RoomInfoDto roomsInfo = roomService.getByTitleAndType(typetitle, title);
+        if (roomsInfo != null) return ResponseEntity.ok(roomsInfo);
+        return ResponseEntity.badRequest().build();
     }
 }

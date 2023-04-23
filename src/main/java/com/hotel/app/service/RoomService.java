@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface RoomService{
     Room getByRoomTitle(String title);
+    RoomInfoDto getByTitleAndType(String typeTitle, String roomTitle);
     List<RoomInfoDto> getAllByType(String type_title, Boolean status, String direction, Date arrivalDate, Date departureDate);
     List<RoomInfoDto> getAll(Boolean status, String direction, Date arrivalDate, Date departureDate);
     void save(Room room);

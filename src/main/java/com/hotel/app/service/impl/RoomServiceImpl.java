@@ -27,6 +27,12 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException("Room not found with title: " + title));
     }
+
+    @Override
+    public RoomInfoDto getByTitleAndType(String typeTitle, String roomTitle) {
+        return roomRepository.findOneRoomByTypeAndTitle(typeTitle, roomTitle);
+    }
+
     @Override
     public List<RoomInfoDto> getAllByType(String type_title, Boolean status, String direction, Date arrivalDate, Date departureDate) {
         List<RoomInfoDto> resultList = new ArrayList<>();
