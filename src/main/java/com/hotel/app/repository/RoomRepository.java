@@ -26,6 +26,12 @@ public interface RoomRepository extends CrudRepository<Room, Integer> {
             "ORDER BY CASE WHEN :direction = 'ASC' THEN r.price END ASC, " +
             "CASE WHEN :direction = 'DESC' THEN r.price END DESC")
     List<RoomInfoDto> findRoomInfoAllByStatusOrderByPrice(@Param("status") Boolean status, @Param("direction") String direction);
+
+    @Query("SELECT new com.hotel.app.dto.RoomInfoDto(r.id, t.title, r.number, r.title, r.description, r.image, r.price, r.status) " +
+            "FROM Room r " +
+            "Join RoomType t on r.type = t.id " +
+            "where r.title = :roomTitle and t.title = :title")
+    RoomInfoDto findOneRoomByTypeAndTitle(@Param("title") String type_title, @Param("roomTitle") String roomTitle);
     @Query("SELECT new com.hotel.app.dto.RoomInfoDto(r.id, t.title, r.number, r.title, r.description, r.image, r.price, r.status) " +
             "FROM Room r " +
             "Join RoomType t on r.type = t.id " +
