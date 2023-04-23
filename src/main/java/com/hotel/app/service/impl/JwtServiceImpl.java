@@ -6,19 +6,29 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-@Service
+@Configuration
 public class JwtServiceImpl implements JwtService {
-    private static final String SECRET_KEY = "38792F423F4528472B4B6250655368566D597133743677397A24432646294A40";
+    @Value("${hotel.secret-key}")
+    private String SECRET_KEY;
+
+    @Value("${hotel.token.expiration}")
+    private long tokenExpiration;
+
+    @Value("${hotel.refreshtoken.expiration}")
+    private String refreshTokenExpiration;
     @Override
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -30,7 +40,7 @@ public class JwtServiceImpl implements JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + tokenExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -44,7 +54,7 @@ public class JwtServiceImpl implements JwtService {
                 .setClaims(extraClaims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + tokenExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -57,7 +67,7 @@ public class JwtServiceImpl implements JwtService {
         final Map<String, Object> extraClaims = new HashMap<>(claims);
 
         Instant now = Instant.now();
-        Instant newExpirationInstant = now.plus(Period.ofWeeks(2));
+        Instant newExpirationInstant = now.plus(Period.parse(refreshTokenExpiration));;
         final Date newExpiration = Date.from(newExpirationInstant);
 
         return Jwts.builder()
