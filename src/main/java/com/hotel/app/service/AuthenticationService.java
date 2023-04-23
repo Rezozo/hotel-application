@@ -9,6 +9,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface AuthenticationService {
-    String register(RegisterRequest request);
-    Map<String, Object> authenticate(AuthenticationRequest request, HttpServletResponse response);
+    void register(RegisterRequest request);
+    AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response);
 }

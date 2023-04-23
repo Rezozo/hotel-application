@@ -9,12 +9,9 @@ import com.hotel.app.service.UsersService;
 import com.hotel.app.service.impl.AuthenticationServiceImpl;
 import com.hotel.app.service.impl.JwtServiceImpl;
 import com.hotel.app.service.impl.UsersServiceImpl;
-import com.hotel.app.validate.RegisterValidate;
-import com.hotel.app.validate.impl.RegisterValidateImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,18 +50,14 @@ public class AuthorizationConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }
-    @Bean
-    public RegisterValidate registerValidate(CustomerService customerService) {
-        return new RegisterValidateImpl(customerService);
-    }
+
     @Bean
     public AuthenticationService authenticationService(UsersService usersService,
                                                        PasswordEncoder passwordEncoder,
                                                        JwtService jwtService,
                                                        AuthenticationManager manager,
-                                                       CustomerService customerService,
-                                                       RegisterValidate registerValidate) {
-        return new AuthenticationServiceImpl(usersService, passwordEncoder, jwtService, manager, customerService, registerValidate);
+                                                       CustomerService customerService) {
+        return new AuthenticationServiceImpl(usersService, passwordEncoder, jwtService, manager, customerService);
     }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
