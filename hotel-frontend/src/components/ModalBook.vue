@@ -101,7 +101,11 @@ export default defineComponent({
         await BookingService.addNewBooking(data);
         router.push({ path: "/profile/booking" });
       } catch (error) {
-        bookingInfo.errorMessage = error.response.data;
+        if(error.response.data.length < 255) {
+          bookingInfo.errorMessage = error.response.data;
+        } else {
+          bookingInfo.errorMessage = error.response.data.message;
+        }
       }
     }
 
