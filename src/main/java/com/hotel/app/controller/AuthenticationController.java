@@ -24,24 +24,17 @@ public class AuthenticationController {
     @RequestMapping(value = "/register", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request)
     {
-        String result = service.register(request);
-        if (result.equals("Success")) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.badRequest().body(result);
-        }
+        service.register(request);
+        return ResponseEntity.ok("Success");
     }
     @RequestMapping(value = "/authenticate", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequest request, HttpServletResponse response)
     {
-        Map<String, Object> result = service.authenticate(request, response);
-        if (result.containsKey("token")) {
-            return ResponseEntity.ok(AuthenticationResponse.builder()
-                    .token((String) result.get("token"))
-                    .refreshToken((String) result.get("refreshToken"))
-                    .build());
+        AuthenticationResponse authenticationResponse = service.authenticate(request, response);
+        if (authenticationResponse != null) {
+            return ResponseEntity.ok(authenticationResponse);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result.get("error"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ERROR");
         }
     }
     @RequestMapping(value = "/refresh", method = RequestMethod.POST)
