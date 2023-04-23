@@ -1,7 +1,8 @@
 package com.hotel.app.validate;
 
 import com.hotel.app.service.CustomerService;
-import com.hotel.app.validate.impl.RegisterValidateImpl;
+import com.hotel.app.validate.impl.EmailValidatorImpl;
+import com.hotel.app.validate.impl.PhoneNumberValidatorImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,15 +10,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RegisterValidateTest {
     @InjectMocks
-    private RegisterValidateImpl registerValidate;
-
+    EmailValidatorImpl emailValidator;
+    @InjectMocks
+    PhoneNumberValidatorImpl phoneNumberValidator;
     @Mock
     private CustomerService customerService;
 
@@ -26,9 +28,9 @@ public class RegisterValidateTest {
         String phoneNumber = "792343412353";
         when(customerService.existPhoneNumber(phoneNumber)).thenReturn(false);
 
-        String result = registerValidate.validPhoneNumber(phoneNumber);
+        boolean result = phoneNumberValidator.isValid(phoneNumber, null);
 
-        assertEquals("true", result);
+        assertTrue(result);
         verify(customerService).existPhoneNumber(phoneNumber);
     }
 
@@ -37,9 +39,8 @@ public class RegisterValidateTest {
         String phoneNumber = "79263193397";
         when(customerService.existPhoneNumber(phoneNumber)).thenReturn(true);
 
-        String result = registerValidate.validPhoneNumber(phoneNumber);
-
-        assertEquals("Phone number already used", result);
+        boolean result = phoneNumberValidator.isValid(phoneNumber, null);
+        assertFalse(result);
         verify(customerService).existPhoneNumber(phoneNumber);
     }
 
@@ -48,9 +49,9 @@ public class RegisterValidateTest {
         String email = "krahmalev@yandex.ru";
         when(customerService.existEmail(email)).thenReturn(false);
 
-        String result = registerValidate.validEmail(email);
+        boolean result = emailValidator.isValid(email, null);
 
-        assertEquals("true", result);
+        assertTrue(result);
         verify(customerService).existEmail(email);
     }
 
@@ -58,8 +59,8 @@ public class RegisterValidateTest {
     public void validEmail_Fail_Invalid_email() {
         String email = "krahmalevyandex.ru";
 
-        String result = registerValidate.validEmail(email);
+        boolean result = emailValidator.isValid(email, null);
 
-        assertEquals("Invalid email", result);
+        assertFalse(result);
     }
 }

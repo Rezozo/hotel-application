@@ -1,7 +1,6 @@
 package com.hotel.app.controller;
 
 import com.hotel.app.dto.RoomInfoDto;
-import com.hotel.app.dto.RoomInfoOneDto;
 import com.hotel.app.models.RoomType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +30,7 @@ public class HomeControllerTest {
                 "/myhotel/",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<RoomType>>() {});
+                new ParameterizedTypeReference<>() {});
 
         List<RoomType> roomTypes = response.getBody();
 
@@ -49,7 +48,7 @@ public class HomeControllerTest {
                 "/myhotel/allrooms?status={status}&direction={direction}",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<RoomInfoDto>>() {},
+                new ParameterizedTypeReference<>() {},
                 status, direction
         );
 
@@ -69,7 +68,7 @@ public class HomeControllerTest {
                 "/myhotel/{typetitle}/rooms?direction={direction}",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<RoomInfoDto>>() {},
+                new ParameterizedTypeReference<>() {},
                 typetitle, direction
         );
 
@@ -84,15 +83,15 @@ public class HomeControllerTest {
         String typetitle = "Quadruple";
         String roomTitle = "Family luxury";
 
-        ResponseEntity<RoomInfoOneDto> response = restTemplate.exchange(
+        ResponseEntity<RoomInfoDto> response = restTemplate.exchange(
                 "/myhotel/{typetitle}/rooms/{title}",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<RoomInfoOneDto>() {},
+                new ParameterizedTypeReference<>() {},
                 typetitle, roomTitle
         );
 
-        RoomInfoOneDto roomInfoOneDto = response.getBody();
+        RoomInfoDto roomInfoOneDto = response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(70, roomInfoOneDto.getPrice());
