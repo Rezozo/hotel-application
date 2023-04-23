@@ -1,6 +1,7 @@
 package com.hotel.app.service.impl;
 
 import com.hotel.app.dto.ReviewInfoDto;
+import com.hotel.app.exceptions.ReviewExistException;
 import com.hotel.app.models.Customer;
 import com.hotel.app.service.ReviewService;
 import com.hotel.app.models.Review;
@@ -59,19 +60,19 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
     @Override
-    public String canReview(ReviewInfoDto reviewDto, Customer customer) {
+    public Boolean canReview(ReviewInfoDto reviewDto, Customer customer) throws ReviewExistException {
         if(getById(customer.getId()) == null) {
-            return "true";
+            return true;
         } else {
-            return "Review already exists";
+            throw new ReviewExistException();
         }
     }
     @Override
-    public String canUpdate(ReviewInfoDto reviewDto, Customer customer) {
+    public Boolean canUpdate(ReviewInfoDto reviewDto, Customer customer) {
         if(getById(customer.getId()) != null) {
-            return "true";
+            return true;
         } else {
-            return "Review not exists";
+            return false;
         }
     }
 }

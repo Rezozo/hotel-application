@@ -1,6 +1,7 @@
 package com.hotel.app.service;
 
 import com.hotel.app.dto.ReviewInfoDto;
+import com.hotel.app.exceptions.ReviewExistException;
 import com.hotel.app.models.Customer;
 import com.hotel.app.models.Review;
 
@@ -15,6 +16,6 @@ public interface ReviewService {
     void save(Review review);
     void updateRateAndFeedback(Integer id, Byte rate, String feedback);
     void deleteById(Integer id);
-    String canReview(ReviewInfoDto reviewDto, Customer customer);
-    String canUpdate(ReviewInfoDto reviewDto, Customer customer);
+    Boolean canReview(ReviewInfoDto reviewDto, Customer customer) throws ReviewExistException;
+    Boolean canUpdate(ReviewInfoDto reviewDto, Customer customer);
 }
