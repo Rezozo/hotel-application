@@ -28,9 +28,16 @@
 
 <br/>
 
+## Application Structure
+
+![Architecture](https://i.ibb.co/q0qLJtR/Architecture.jpg)
+
+
+
 ## Database Structure
 
 ![Database](https://i.ibb.co/Y4gvskp/Database.jpg)
+
 
 
 ## Screenshots:
