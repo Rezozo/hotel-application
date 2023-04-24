@@ -5,7 +5,7 @@
 ## Used Technologies:
 
 ### Back-end:
-* **Java 17 + Spring (Boot, Data, Security) + JPA / Hibernate + PostgreSQL + Kafka + FCM + JUnit + Mockito**
+* **Java 17 + Kotlin + Spring (Boot, Data, Security) + JPA / Hibernate + PostgreSQL + Kafka + FCM + JUnit + Mockito**
 
 ### Front-end: 
 * **Vue3.0 + TypeScript + Vue-Router + Axios**
@@ -30,14 +30,12 @@
 
 ## Application Structure
 
-![Architecture](https://i.ibb.co/q0qLJtR/Architecture.jpg)
-
+![Architecture](https://i.ibb.co/K9qr6DH/Architecture.jpg)
 
 
 ## Database Structure
 
 ![Database](https://i.ibb.co/Y4gvskp/Database.jpg)
-
 
 
 ## Screenshots:
