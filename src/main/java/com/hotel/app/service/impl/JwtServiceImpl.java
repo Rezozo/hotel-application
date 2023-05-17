@@ -1,6 +1,7 @@
 package com.hotel.app.service.impl;
 
 import com.hotel.app.service.JwtService;
+import com.hotel.app.service.TokensService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,6 +30,12 @@ public class JwtServiceImpl implements JwtService {
 
     @Value("${hotel.refreshtoken.expiration}")
     private String refreshTokenExpiration;
+    private final TokensService tokenService;
+
+    public JwtServiceImpl(TokensService tokensService) {
+        this.tokenService = tokensService;
+    }
+
     @Override
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -81,13 +88,13 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public Boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUserLogin(token);
-        if (!username.equals(userDetails.getUsername())) {
-            return false;
-        }
+        if (!username.equals(userDetails.getUsername())) return false;
+
         if (isTokenExpired(token)) {
-            String newToken = refreshToken(token);
-            token = newToken;
+            token = refreshToken(token);
         }
+        if (tokenService.getByToken(token) == null) return false;
+
         return !isTokenExpired(token);
     }
     @Override

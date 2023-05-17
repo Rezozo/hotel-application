@@ -5,11 +5,9 @@ import com.hotel.app.config.request.RegisterRequest;
 import com.hotel.app.config.response.AuthenticationResponse;
 import com.hotel.app.enums.Role;
 import com.hotel.app.models.Customer;
+import com.hotel.app.models.Tokens;
 import com.hotel.app.models.Users;
-import com.hotel.app.service.AuthenticationService;
-import com.hotel.app.service.CustomerService;
-import com.hotel.app.service.JwtService;
-import com.hotel.app.service.UsersService;
+import com.hotel.app.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager manager;
     private final CustomerService customerService;
+    private final TokensService tokensService;
     @Override
     public void register(RegisterRequest request) throws BadCredentialsException {
         Users user = Users.builder()
@@ -53,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Users user = usersService.getByEmail(request.getEmail());
             String jwtToken = jwtService.generateToken(user);
             String refreshToken = jwtService.refreshToken(jwtToken);
+            tokensService.save(new Tokens(user.getId(), jwtToken, refreshToken));
 
             return AuthenticationResponse.builder()
                     .token(jwtToken)
