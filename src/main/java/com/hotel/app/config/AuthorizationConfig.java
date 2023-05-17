@@ -1,13 +1,12 @@
 package com.hotel.app.config;
 
 import com.hotel.app.config.filter.JwtAuthenticationFilter;
+import com.hotel.app.repository.TokensRepository;
 import com.hotel.app.repository.UsersRepository;
-import com.hotel.app.service.AuthenticationService;
-import com.hotel.app.service.CustomerService;
-import com.hotel.app.service.JwtService;
-import com.hotel.app.service.UsersService;
+import com.hotel.app.service.*;
 import com.hotel.app.service.impl.AuthenticationServiceImpl;
 import com.hotel.app.service.impl.JwtServiceImpl;
+import com.hotel.app.service.impl.TokensServiceImpl;
 import com.hotel.app.service.impl.UsersServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +33,8 @@ public class AuthorizationConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
     @Bean
-    public JwtServiceImpl jwtService() {
-        return new JwtServiceImpl();
+    public JwtServiceImpl jwtService(TokensService tokensService) {
+        return new JwtServiceImpl(tokensService);
     }
 
     @Bean
@@ -56,8 +55,9 @@ public class AuthorizationConfig {
                                                        PasswordEncoder passwordEncoder,
                                                        JwtService jwtService,
                                                        AuthenticationManager manager,
-                                                       CustomerService customerService) {
-        return new AuthenticationServiceImpl(usersService, passwordEncoder, jwtService, manager, customerService);
+                                                       CustomerService customerService,
+                                                       TokensService tokensService) {
+        return new AuthenticationServiceImpl(usersService, passwordEncoder, jwtService, manager, customerService, tokensService);
     }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -66,5 +66,10 @@ public class AuthorizationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public TokensService tokensService(TokensRepository tokensRepository) {
+        return new TokensServiceImpl(tokensRepository);
     }
 }
