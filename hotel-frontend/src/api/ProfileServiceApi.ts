@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const PROFILE_API_HOME_URL = 'http://localhost:8080/profile/';
-const PROFILE_API_UPDATE_URL = 'http://localhost:8080/profile/update';
+const PROFILE_API_UPDATE_URL = 'http://localhost:8080/profile/';
 const PROFILE_API_BOOKING_URL = 'http://localhost:8080/profile/booking';
-const PROFILE_API_DELETE_BOOKING_URL = 'http://localhost:8080/profile/booking/delete';
+const PROFILE_API_DELETE_BOOKING_URL = 'http://localhost:8080/profile/booking/';
 
 
 class ProfileService {
@@ -17,7 +17,7 @@ class ProfileService {
         return axios.get(PROFILE_API_BOOKING_URL, {params: {'email': email}});
     }
     deleteBooking(id : number) {
-        return axios.delete(PROFILE_API_DELETE_BOOKING_URL, {params: {'id': id}});
+        return axios.delete(PROFILE_API_DELETE_BOOKING_URL + id);
     }
 }
 

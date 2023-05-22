@@ -19,6 +19,7 @@ import java.util.List;
 public class HomeController {
     private RoomService roomService;
     private RoomTypeService roomTypeService;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<RoomType> homeTypes() {
         return roomTypeService.getAll();
@@ -43,6 +44,7 @@ public class HomeController {
 
         return ResponseEntity.ok(roomService.getAllByType(roomType.getTitle(), status, direction, arrivalDate, departureDate));
     }
+
     @RequestMapping(value = "/{typetitle}/rooms/{title}", method = RequestMethod.GET)
     public ResponseEntity<RoomInfoDto> homeOneRoom(@PathVariable String typetitle, @PathVariable String title) {
         RoomType roomType = roomTypeService.getByTitle(typetitle);

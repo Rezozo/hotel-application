@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const REVIEW_API_BASE_HOME_URL = 'http://localhost:8080/reviews/';
-const REVIEW_API_ADD_REVIEW_URL = 'http://localhost:8080/reviews/add';
-const REVIEW_API_DELETE_REVIEW_URL = 'http://localhost:8080/reviews/delete';
+const REVIEW_API_ADD_REVIEW_URL = 'http://localhost:8080/reviews/';
+const REVIEW_API_DELETE_REVIEW_URL = 'http://localhost:8080/reviews/';
 
 class ReviewService {
     getReviews() {
@@ -12,7 +12,7 @@ class ReviewService {
         return axios.post(REVIEW_API_ADD_REVIEW_URL, data);
     }
     deleteReview(id: string) {
-        return axios.delete(REVIEW_API_DELETE_REVIEW_URL, { data: { id } });
+        return axios.delete(REVIEW_API_DELETE_REVIEW_URL + id);
     }
 }
 

@@ -27,6 +27,7 @@ public class BookingController {
     private BookingService bookingService;
     private BookingValidate bookingValidate;
     private final KafkaProducerService producerService;
+
     @RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.POST})
     @SneakyThrows
     public ResponseEntity<?> roomBooking(@Valid @RequestBody(required = false) BookingInfoDto bookingInfoDto) {

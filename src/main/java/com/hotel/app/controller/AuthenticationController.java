@@ -23,12 +23,14 @@ public class AuthenticationController {
     private final AuthenticationService service;
     private final JwtService jwtService;
     private final TokensService tokensService;
+
     @RequestMapping(value = "/register", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request)
     {
         service.register(request);
         return ResponseEntity.ok("Success");
     }
+
     @RequestMapping(value = "/authenticate", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequest request, HttpServletResponse response)
     {
@@ -39,6 +41,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ERROR");
         }
     }
+
     @RequestMapping(value = "/refresh", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationResponse> refresh(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
@@ -51,6 +54,7 @@ public class AuthenticationController {
                 .token(newToken)
                 .build());
     }
+
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ResponseEntity<?> logout (){
         return ResponseEntity.ok().body("Logout");

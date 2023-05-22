@@ -19,13 +19,13 @@ public class AdminController {
         return usersService.getAll();
     }
 
-    @RequestMapping(value = "/users/del", method = RequestMethod.DELETE)
-    public void deleteUser(@RequestParam(required = false) Integer id) {
-        usersService.deleteById(id);
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable Integer userId) {
+        usersService.deleteById(userId);
     }
 
-    @RequestMapping(value = "/users/update", method = RequestMethod.PUT)
-    public void updateUser(@RequestParam(required = false) Integer id) {
-        usersService.updateUsersGroup(id, Role.Manager);
+    @RequestMapping(value = "/users/{userId}/roles", method = RequestMethod.PUT)
+    public void updateUser(@PathVariable Integer userId) {
+        usersService.updateUsersGroup(userId, Role.Manager);
     }
 }
