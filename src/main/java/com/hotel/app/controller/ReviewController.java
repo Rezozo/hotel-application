@@ -24,7 +24,8 @@ public class ReviewController {
     public List<ReviewInfoDto> homeReviews(@RequestParam(required = false) String direction) {
         return reviewService.getAll(direction);
     }
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<String> addReview(@Valid @RequestBody ReviewInfoDto reviewDto) {
         try {
             Customer customer = customerService.getByEmail(reviewDto.getEmail());
@@ -37,13 +38,15 @@ public class ReviewController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteReview(@RequestBody Review review) {
         Customer customer = customerService.getById(review.getId());
         reviewService.deleteById(customer.getId());
         return ResponseEntity.ok().build();
     }
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
     public ResponseEntity<String> updateReview(@Valid @RequestBody ReviewInfoDto reviewDto) {
         Customer customer = customerService.getById(reviewDto.getId());
         Boolean result = reviewService.canUpdate(reviewDto, customer);

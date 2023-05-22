@@ -20,32 +20,39 @@ public class ManagerController {
     private CustomerService customerService;
     private BookingService bookingService;
     private ReviewService reviewService;
+
     @RequestMapping(value = "/customers", method = RequestMethod.GET)
     public List<Customer> allCustomers() {
         return customerService.getAll();
     }
+
     @RequestMapping(value = "/bookings", method = RequestMethod.GET)
     public List<BookingInfoDto> allBookings(@RequestParam(required = false) String directionPrice, @RequestParam(required = false) String directionDate) {
         return bookingService.getAll(directionPrice, directionDate);
     }
+
     @RequestMapping(value = "/stats", method = RequestMethod.GET)
     public List<Map<String, Integer>> showStats(@RequestParam(required = false) Boolean thisMonth) {
         return bookingService.getStats(thisMonth);
     }
+
     @RequestMapping(value = "/customer/book", method = RequestMethod.GET)
     public List<BookingInfoDto> customersBookings(@RequestParam(required = false) String phoneNumber) {
         return bookingService.getByPhoneNumber(phoneNumber);
     }
-    @RequestMapping(value = "/customer/book/del", method = RequestMethod.DELETE)
-    public void customersBookingsDelete(@RequestParam(required = false) Integer id) {
-        bookingService.deleteById(id);
+
+    @RequestMapping(value = "/customer/book/{bookingId}", method = RequestMethod.DELETE)
+    public void customersBookingsDelete(@PathVariable Integer bookingId) {
+        bookingService.deleteById(bookingId);
     }
+
     @RequestMapping(value = "/customer/review", method = RequestMethod.GET)
     public ReviewInfoDto customersReview(@RequestParam(required = false) Integer id) {
         return reviewService.getByIdInfo(id);
     }
-    @RequestMapping(value = "/customer/review/del", method = RequestMethod.DELETE)
-    public void customersReviewDelete(@RequestParam(required = false) Integer id) {
-        reviewService.deleteById(id);
+    
+    @RequestMapping(value = "/customer/review/{reviewId}", method = RequestMethod.DELETE)
+    public void customersReviewDelete(@PathVariable Integer reviewId) {
+        reviewService.deleteById(reviewId);
     }
 }

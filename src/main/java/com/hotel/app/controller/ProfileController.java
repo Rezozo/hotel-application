@@ -20,23 +20,27 @@ public class ProfileController {
     private CustomerService customerService;
     private UsersService usersService;
     private BookingService bookingService;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public Customer myProfile(@RequestParam String email) {
         return customerService.getByEmail(email);
     }
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
     public ResponseEntity<String> updateCustomer(@Valid @RequestBody Customer customer) {
         customerService.updateCustomer(customer);
         usersService.updateById(customer.getId(), customer.getEmail(), customer.getFullName());
         return ResponseEntity.ok("Success");
     }
+
     @RequestMapping(value = "/booking", method = RequestMethod.GET)
     public List<BookingInfoDto> customersBookings(@RequestParam(required = false) String email) {
         Customer customer = customerService.getByEmail(email);
         return bookingService.getByPhoneNumber(customer.getPhoneNumber());
     }
-    @RequestMapping(value = "/booking/delete", method = RequestMethod.DELETE)
-    public void customersBookingsDelete(@RequestParam(required = false) Integer id) {
-        bookingService.deleteById(id);
+
+    @RequestMapping(value = "/booking/{bookingId}", method = RequestMethod.DELETE)
+    public void customersBookingsDelete(@PathVariable Integer bookingId) {
+        bookingService.deleteById(bookingId);
     }
 }
