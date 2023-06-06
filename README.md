@@ -52,7 +52,7 @@
 
 * ### Auth Page
 
-![Auth](https://i.ibb.co/0rdFKZh/Auth.png)<br/>
+![Auth](https://i.ibb.co/MPynyYg/Auth.png)<br/>
 
 * ### Profile Page
 
